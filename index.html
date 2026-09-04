@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Austin, TX — The Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,440;9..144,560;9..144,640&family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --limestone:#F2EADB;
+    --card:#FBF6EA;
+    --ink:#2A2318;
+    --ink-soft:#5B5240;
+    --rust:#B24B24;
+    --rust-dim:#8f3c1c;
+    --gold:#DDA23A;
+    --pool:#187572;
+    --pool-dim:#0f4f4d;
+    --sage:#4B5C42;
+    --line:#DDD0B8;
+    --dark:#1E2420;
+    --dark-card:#262E29;
+    --cream-on-dark:#F2EADB;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%; -webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:#0f0d0a;
+    font-family:'Libre Franklin',sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+    outline:none;
+    overscroll-behavior:none;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:560;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  .deck{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
+  }
+  .slide{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    background:var(--limestone);
+    opacity:0;
+    visibility:hidden;
+    transform:translateX(24px);
+    transition:opacity .5s ease, transform .5s ease, visibility 0s linear .5s;
+    padding:clamp(28px,5vw,88px) clamp(28px,7vw,120px) clamp(90px,9vh,120px);
+    padding-bottom:calc(clamp(90px,9vh,120px) + env(safe-area-inset-bottom,0px));
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .slide.active{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(0);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .slide.dark{ background:var(--dark); color:var(--cream-on-dark); }
+  .slide.dark .eyebrow{ color:var(--gold); }
+  .slide.dark .soft{ color:#C9C2B4; }
+
+  .eyebrow{
+    font-family:'Libre Franklin',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--rust);
+    margin-bottom:14px;
+  }
+  .soft{ color:var(--ink-soft); }
+  .slide-inner{ max-width:1180px; width:100%; margin:0 auto; }
+
+  h1{ font-size:clamp(40px,6.2vw,84px); line-height:1.03; }
+  h2{ font-size:clamp(30px,4.4vw,54px); line-height:1.08; }
+  .lede{
+    font-size:clamp(17px,1.7vw,22px);
+    color:var(--ink-soft);
+    max-width:640px;
+    margin-top:16px;
+    line-height:1.5;
+  }
+  .slide.dark .lede{ color:#C9C2B4; }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
+  .chip{
+    border:1px solid var(--line);
+    background:var(--card);
+    padding:8px 16px;
+    border-radius:100px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+  }
+  .slide.dark .chip{ border-color:#3c453e; background:#242b26; color:#e4ddcd; }
+
+  /* ---------- Slide 1: cover ---------- */
+  .cover-wrap{
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items:center;
+    gap:40px;
+    max-width:1280px;
+    margin:0 auto;
+    width:100%;
+  }
+  .cover-map{ width:100%; max-width:520px; justify-self:center; }
+  .cover-map svg{ width:100%; height:auto; display:block; }
+  .route-label{ font-size:13px; font-weight:700; fill:var(--ink); font-family:'Libre Franklin',sans-serif; }
+  .route-sub{ font-size:11px; fill:var(--ink-soft); font-family:'Libre Franklin',sans-serif; }
+
+  /* ---------- roster cards ---------- */
+  .roster-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin-top:40px;
+  }
+  .roster-card{
+    border:1px solid var(--line);
+    background:var(--card);
+    padding:22px 18px;
+    border-radius:6px;
+  }
+  .roster-card .who{ font-family:'Fraunces',serif; font-weight:560; font-size:21px; margin-bottom:10px;}
+  .roster-card .loc{ font-size:13px; color:var(--rust); font-weight:700; margin-bottom:14px; text-transform:none;}
+  .roster-card .fam{ font-size:15px; color:var(--ink-soft); line-height:1.5; }
+  .stat-strip{
+    margin-top:28px;
+    display:flex;
+    gap:0;
+    border-top:1px solid var(--line);
+    padding-top:20px;
+  }
+  .stat-strip div{ flex:1; }
+  .stat-strip .num{ font-family:'Fraunces',serif; font-size:clamp(26px,3vw,38px); color:var(--pool); }
+  .stat-strip .lbl{ font-size:13px; color:var(--ink-soft); margin-top:4px; }
+
+  /* ---------- tension split ---------- */
+  .split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:36px;
+  }
+  .split-panel{
+    padding:32px 28px;
+    border-radius:8px;
+  }
+  .split-panel.nesters{ background:#E7EEE4; border:1px solid #CBDAC3; }
+  .split-panel.explorers{ background:#FBEAD9; border:1px solid #F0CDA9; }
+  .split-panel h3{ font-size:24px; margin-bottom:10px; }
+  .split-panel.nesters h3{ color:var(--sage); }
+  .split-panel.explorers h3{ color:var(--rust); }
+  .split-panel p{ font-size:16px; line-height:1.55; color:var(--ink-soft); }
+  .tension-line{
+    margin-top:26px;
+    font-family:'Fraunces',serif;
+    font-size:clamp(20px,2.3vw,26px);
+    font-weight:440;
+    font-style:italic;
+  }
+
+  /* ---------- pillars ---------- */
+  .pillar-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+    margin-top:40px;
+  }
+  .pillar{
+    border-top:2px solid var(--rust);
+    padding-top:18px;
+  }
+  .pillar .n{ font-family:'Fraunces',serif; font-size:15px; color:var(--rust); font-weight:600; margin-bottom:14px; }
+  .pillar h3{ font-size:22px; margin-bottom:10px; line-height:1.2; }
+  .pillar p{ font-size:15px; color:var(--ink-soft); line-height:1.5; }
+
+  /* ---------- flights table ---------- */
+  .flight-rows{ margin-top:36px; border-top:1px solid var(--line); }
+  .flight-row{
+    display:grid;
+    grid-template-columns: 1.1fr 0.7fr 0.9fr 1.3fr;
+    gap:18px;
+    align-items:center;
+    padding:20px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .flight-row .city{ font-family:'Fraunces',serif; font-size:22px; }
+  .flight-row .tag{ font-size:13px; font-weight:700; color:var(--pool); }
+  .flight-row .dur{ font-size:20px; font-weight:700; }
+  .flight-row .air{ font-size:14px; color:var(--ink-soft); }
+  .note-box{
+    margin-top:26px;
+    padding:16px 20px;
+    border-left:3px solid var(--pool);
+    background:#EAF3F2;
+    font-size:15px;
+    color:var(--pool-dim);
+    line-height:1.5;
+    max-width:720px;
+  }
+
+  /* ---------- weather (dark) ---------- */
+  .weather-wrap{ margin-top:44px; max-width:760px; }
+  .weather-bar-row{ margin-bottom:30px; }
+  .weather-bar-row .wlabel{
+    display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;
+  }
+  .weather-bar-row .wlabel .place{ font-family:'Fraunces',serif; font-size:20px; }
+  .weather-bar-row .wlabel .temp{ font-family:'Fraunces',serif; font-size:clamp(34px,4vw,52px); }
+  .wbar-track{ height:14px; background:#333c35; border-radius:100px; overflow:hidden; }
+  .wbar-fill{ height:100%; border-radius:100px; }
+  .wbar-fill.austin{ background:linear-gradient(90deg,var(--pool),#28a19c); }
+  .wbar-fill.phx{ background:linear-gradient(90deg,var(--rust-dim),var(--rust)); }
+  .weather-note{ margin-top:8px; font-size:14px; color:#B9B2A2; }
+
+  /* ---------- two-vacation split ---------- */
+  .stayout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    margin-top:38px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .stayout > div{ padding:32px 30px; }
+  .stayout .stay{ background:#E7EEE4; }
+  .stayout .out{ background:#E4EFEE; }
+  .stayout h3{ font-size:22px; margin-bottom:14px; }
+  .stayout .stay h3{ color:var(--sage); }
+  .stayout .out h3{ color:var(--pool); }
+  .stayout ul{ margin:0; padding-left:18px; color:var(--ink-soft); font-size:15px; line-height:1.7; }
+
+  /* ---------- house comparison mini table ---------- */
+  .mini-table{ margin-top:36px; border-top:1px solid var(--line); }
+  .mini-row{
+    display:grid;
+    grid-template-columns: 1.5fr 0.8fr 0.9fr 1fr;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+    align-items:center;
+    font-size:16px;
+  }
+  .mini-row.head{ font-size:13px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; }
+  .mini-row .hname{ font-family:'Fraunces',serif; font-size:19px; }
+  .price-tag{ font-weight:700; }
+  .price-tag.under{ color:var(--pool); }
+  .price-tag.over{ color:var(--rust); }
+  .mlabel{ display:none; }
+
+  /* ---------- house detail slides ---------- */
+  .house-head{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; }
+  .house-head .meta-right{ display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+  .house-name{ font-size:clamp(32px,4.6vw,56px); }
+  .rating-chip{
+    border:1px solid var(--line); background:var(--card);
+    padding:9px 16px; border-radius:100px; font-size:14px; font-weight:600; white-space:nowrap;
+  }
+  .house-links{ display:flex; gap:10px; flex-wrap:wrap; margin-top:2px; }
+  .listing-link{
+    display:inline-flex; align-items:center; gap:6px;
+    border:1px solid var(--rust); color:var(--rust); background:transparent;
+    padding:9px 16px; border-radius:100px; font-size:14px; font-weight:700;
+    text-decoration:none; white-space:nowrap; transition:background .2s, color .2s;
+  }
+  .listing-link:hover{ background:var(--rust); color:#FBF6EA; }
+  .photo-grid{
+    display:grid;
+    grid-template-columns: 1.4fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap:10px;
+    margin-top:24px;
+    height:clamp(220px,32vh,340px);
+    overflow:hidden;
+  }
+  .photo-grid img{ width:100%; height:100%; min-height:0; min-width:0; object-fit:cover; border-radius:6px; display:block; background:#ded3ba; }
+  .photo-grid .big{ grid-row:1 / 3; min-height:0; }
+  .house-body{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:40px;
+    margin-top:28px;
+  }
+  .specs-line{ font-size:16px; color:var(--ink-soft); margin-bottom:6px; }
+  .price-line{ font-family:'Fraunces',serif; font-size:clamp(26px,3vw,36px); margin:10px 0 4px; }
+  .price-sub{ font-size:13px; color:var(--ink-soft); }
+  .highlight-list{ margin:18px 0 0; padding-left:18px; font-size:15px; line-height:1.7; color:var(--ink-soft); }
+  .why-box{
+    margin-top:18px; padding:16px 18px; background:var(--card); border:1px solid var(--line);
+    border-radius:6px; font-size:15px; font-style:italic; color:var(--ink-soft);
+    font-family:'Fraunces',serif; font-weight:440;
+  }
+  .warn-box{
+    margin-top:18px; padding:16px 18px; background:#FBEAD9; border-left:3px solid var(--rust);
+    border-radius:2px; font-size:14.5px; color:var(--rust-dim); line-height:1.5;
+  }
+  .struct-note{
+    margin-top:16px; padding:14px 18px; background:#EAF3F2; border-left:3px solid var(--pool);
+    font-size:14.5px; color:var(--pool-dim); line-height:1.5;
+  }
+
+  /* ---------- activities ---------- */
+  .activity-cols{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:26px;
+    margin-top:38px;
+  }
+  .activity-col h3{ font-size:19px; color:var(--rust); margin-bottom:14px; }
+  .activity-col ul{ margin:0; padding-left:18px; font-size:15px; line-height:1.75; color:var(--ink-soft); }
+
+  /* ---------- closing ---------- */
+  .close-wrap{ max-width:820px; }
+  .close-bullets{
+    margin-top:32px; display:flex; flex-direction:column; gap:16px;
+  }
+  .close-bullets div{
+    display:flex; gap:16px; align-items:flex-start; font-size:18px; line-height:1.5; color:#DCD6C7;
+  }
+  .close-bullets .mark{ color:var(--gold); font-family:'Fraunces',serif; font-size:20px; flex-shrink:0; }
+  .cta-line{
+    margin-top:34px; font-family:'Fraunces',serif; font-size:clamp(22px,2.6vw,30px);
+    color:var(--cream-on-dark); font-weight:440; font-style:italic; max-width:640px;
+  }
+  .lights{ position:absolute; top:0; left:0; width:100%; opacity:.9; }
+
+  /* ---------- nav ---------- */
+  .deck-nav{
+    position:fixed; left:0; right:0; bottom:0;
+    height:calc(64px + env(safe-area-inset-bottom,0px));
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    display:flex; align-items:center; justify-content:center; gap:18px;
+    background:linear-gradient(to top, rgba(15,13,10,.85), rgba(15,13,10,0));
+    z-index:50;
+  }
+  .nav-btn{
+    width:38px; height:38px; border-radius:50%; border:1px solid rgba(242,234,219,.35);
+    background:rgba(242,234,219,.08); color:#F2EADB; font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:background .2s;
+    touch-action:manipulation;
+  }
+  .nav-btn:hover{ background:rgba(242,234,219,.22); }
+  .nav-btn:disabled{ opacity:.25; cursor:default; }
+  .nav-btn:disabled:hover{ background:rgba(242,234,219,.08); }
+  .dots{ display:flex; gap:7px; }
+  .dot{ box-sizing:content-box; width:7px; height:7px; border-radius:50%; background:rgba(242,234,219,.3); cursor:pointer; border:none; padding:9px; background-clip:content-box; transition:background .2s, transform .2s; touch-action:manipulation; }
+  .dot.active{ background:var(--gold); transform:scale(1.3); }
+  .counter{ font-size:12px; color:rgba(242,234,219,.6); letter-spacing:.04em; width:52px; text-align:center; }
+  .progress-track{ position:fixed; top:0; left:0; right:0; height:3px; background:rgba(0,0,0,.06); z-index:60; }
+  .progress-fill{ height:100%; background:var(--rust); width:7.1%; transition:width .4s ease; }
+  .fs-btn{
+    position:fixed; top:calc(18px + env(safe-area-inset-top,0px)); right:calc(22px + env(safe-area-inset-right,0px)); z-index:60;
+    width:36px;height:36px;border-radius:50%; border:1px solid var(--line); background:var(--card);
+    cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
+    font-size:15px; touch-action:manipulation;
+  }
+  .listing-link{ touch-action:manipulation; }
+
+  @media (max-width:880px){
+    .fs-btn{ display:none; } /* Fullscreen API isn't reliably supported in iPhone Safari */
+    .cover-wrap{ grid-template-columns:1fr; }
+    .cover-map{ order:-1; max-width:340px; }
+    .roster-grid{ grid-template-columns:repeat(2,1fr); }
+    .split, .stayout, .house-body{ grid-template-columns:1fr; }
+    .pillar-grid, .activity-cols{ grid-template-columns:1fr; }
+    .flight-row{ grid-template-columns:1fr; gap:6px; padding:16px 0; }
+    .mini-row{ grid-template-columns:1fr 1fr; row-gap:6px; }
+    .mini-row.head{ display:none; }
+    .mini-row .hname{ grid-column:1/3; }
+    .mlabel{ display:inline; color:var(--ink-soft); font-weight:400; }
+    .photo-grid{ grid-template-columns:1fr 1fr; height:auto; grid-template-rows:120px 120px; }
+    .photo-grid .big{ grid-column:1/3; grid-row:1; height:190px; }
+    .stat-strip{ flex-wrap:wrap; }
+    .stat-strip div{ flex:1 1 45%; margin-bottom:14px; }
+    .house-head{ align-items:flex-start; }
+    .house-head .meta-right{ align-items:flex-start; }
+  }
+
+  @media (max-width:420px){
+    .roster-grid{ grid-template-columns:1fr; }
+  }
+
+  @media (max-height:420px) and (orientation:landscape){
+    .slide{ padding-top:20px; padding-bottom:64px; justify-content:flex-start; }
+    .deck-nav{ height:48px; }
+    h1{ font-size:clamp(28px,6vw,44px); }
+    h2{ font-size:clamp(22px,5vw,32px); }
+    .photo-grid{ height:150px !important; grid-template-rows:150px !important; }
+    .photo-grid .big{ height:150px !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<button class="fs-btn" id="fsBtn" title="Full screen" aria-label="Toggle full screen">⛶</button>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1 — COVER -->
+  <section class="slide active">
+    <div class="cover-wrap">
+      <div>
+        <div class="eyebrow">Our submission for the group vote</div>
+        <h1>Meet In<br>The Middle</h1>
+        <p class="lede">Every family on this trip wants something different out of it. We think we found the one place that doesn't make anyone choose — and we're building the case before we tell you where.</p>
+        <div class="chip-row">
+          <span class="chip">July 16–21, 2027 (proposed)</span>
+          <span class="chip">4 families</span>
+          <span class="chip">17 of us</span>
+        </div>
+      </div>
+      <div class="cover-map">
+        <svg viewBox="0 0 560 560" fill="none">
+          <circle cx="300" cy="300" r="230" stroke="#DDD0B8" stroke-width="1" stroke-dasharray="2 6"/>
+          <path d="M90,95 Q160,300 296,296" stroke="#5B5240" stroke-width="1.4" stroke-dasharray="5 6" opacity=".55" fill="none"/>
+          <path d="M478,80 Q380,220 304,296" stroke="#5B5240" stroke-width="1.4" stroke-dasharray="5 6" opacity=".55" fill="none"/>
+          <path d="M486,486 Q380,380 306,304" stroke="#5B5240" stroke-width="1.4" stroke-dasharray="5 6" opacity=".55" fill="none"/>
+
+          <circle cx="90" cy="95" r="6" fill="#187572"/>
+          <text x="90" y="72" text-anchor="middle" class="route-label">Seattle</text>
+          <text x="90" y="118" text-anchor="middle" class="route-sub">~4h15m nonstop</text>
+
+          <circle cx="478" cy="80" r="6" fill="#187572"/>
+          <text x="478" y="57" text-anchor="middle" class="route-label">Minneapolis</text>
+          <text x="478" y="103" text-anchor="middle" class="route-sub">~3h10m nonstop</text>
+
+          <circle cx="486" cy="486" r="6" fill="#187572"/>
+          <text x="486" y="463" text-anchor="middle" class="route-label">Tampa</text>
+          <text x="486" y="509" text-anchor="middle" class="route-sub">~2h35m nonstop</text>
+
+          <circle cx="300" cy="300" r="34" fill="#B24B24" stroke-dasharray="4 4" stroke="#8f3c1c" stroke-width="1.5"/>
+          <text x="300" y="311" text-anchor="middle" fill="#FBF6EA" font-family="Fraunces,serif" font-size="26" font-weight="600">?</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — THE GROUP -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Slide 2 — Who we're planning for</div>
+      <h2>Four Families, One Trip</h2>
+      <p class="lede">Whoever wins this vote has to make it work for everybody, not just their own kids. Here's the full roster.</p>
+      <div class="roster-grid">
+        <div class="roster-card">
+          <div class="who">The Scherbrings</div>
+          <div class="loc">Minnesota — that's us</div>
+          <div class="fam">2 adults<br>2 kids</div>
+        </div>
+        <div class="roster-card">
+          <div class="who">The Gammons</div>
+          <div class="loc">Seattle, WA</div>
+          <div class="fam">2 adults<br>2 kids</div>
+        </div>
+        <div class="roster-card">
+          <div class="who">The Espositas</div>
+          <div class="loc">Tampa, FL</div>
+          <div class="fam">2 adults<br>2 kids</div>
+        </div>
+        <div class="roster-card">
+          <div class="who">The Benders</div>
+          <div class="loc">Tampa, FL</div>
+          <div class="fam">2 adults<br>3 kids</div>
+        </div>
+      </div>
+      <div class="stat-strip">
+        <div><div class="num">17</div><div class="lbl">people total</div></div>
+        <div><div class="num">8</div><div class="lbl">adults</div></div>
+        <div><div class="num">9</div><div class="lbl">kids</div></div>
+        <div><div class="num">3</div><div class="lbl">time zones to reconcile</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — THE TENSION -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Slide 3 — The problem we're solving</div>
+      <h2>We Don't All Want the Same Vacation</h2>
+      <div class="split">
+        <div class="split-panel nesters">
+          <h3>The Nesters</h3>
+          <p>Hang by the pool. Cook together. Let the kids run wild in a backyard that isn't ours. Nobody has to get in a car once we've landed.</p>
+        </div>
+        <div class="split-panel explorers">
+          <h3>The Explorers</h3>
+          <p>Get out and see something new. Give the older kids a city to explore. Find a real restaurant that isn't the same four we always cook.</p>
+        </div>
+      </div>
+      <p class="tension-line">Most destinations make you pick a side. Ours shouldn't have to.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 — THESIS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Slide 4 — Before we say where</div>
+      <h2>What The Winning Destination Has To Do</h2>
+      <p class="lede">Three non-negotiables, in the order we'd defend them. Wherever checks all three gets our vote.</p>
+      <div class="pillar-grid">
+        <div class="pillar">
+          <div class="n">01</div>
+          <h3>Everyone gets here easily</h3>
+          <p>Nonstop flights from every city in this group, into one major airport, with real rental car counters.</p>
+        </div>
+        <div class="pillar">
+          <div class="n">02</div>
+          <h3>The heat isn't the dealbreaker people assume</h3>
+          <p>Hot, yes. But nowhere close to the desert-in-July trip we all agreed to rule out — and every house has its own pool.</p>
+        </div>
+        <div class="pillar">
+          <div class="n">03</div>
+          <h3>One house, two vacations</h3>
+          <p>A resort-style property to disappear into, with a real city 30 to 55 minutes away when somebody wants out.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — REVEAL -->
+  <section class="slide dark">
+    <div class="cover-wrap">
+      <div>
+        <div class="eyebrow">The reveal</div>
+        <h2 style="color:var(--cream-on-dark); font-size:clamp(36px,5vw,64px);">Our Answer:<br>Austin, Texas</h2>
+        <p class="lede" style="color:#C9C2B4;">Hill Country, just outside the city — private when we want it, a real skyline when we don't. Here's how it checks every box from the last slide.</p>
+      </div>
+      <div class="cover-map">
+        <svg viewBox="0 0 560 560" fill="none">
+          <circle cx="300" cy="300" r="230" stroke="#3c453e" stroke-width="1" stroke-dasharray="2 6"/>
+          <path d="M90,95 Q160,300 296,296" stroke="#8a8272" stroke-width="1.4" stroke-dasharray="5 6" opacity=".5" fill="none"/>
+          <path d="M478,80 Q380,220 304,296" stroke="#8a8272" stroke-width="1.4" stroke-dasharray="5 6" opacity=".5" fill="none"/>
+          <path d="M486,486 Q380,380 306,304" stroke="#8a8272" stroke-width="1.4" stroke-dasharray="5 6" opacity=".5" fill="none"/>
+
+          <circle cx="90" cy="95" r="6" fill="#DDA23A"/>
+          <text x="90" y="72" text-anchor="middle" fill="#F2EADB" font-family="Libre Franklin,sans-serif" font-weight="700" font-size="13">Seattle</text>
+          <text x="90" y="118" text-anchor="middle" fill="#C9C2B4" font-family="Libre Franklin,sans-serif" font-size="11">~4h15m nonstop</text>
+
+          <circle cx="478" cy="80" r="6" fill="#DDA23A"/>
+          <text x="478" y="57" text-anchor="middle" fill="#F2EADB" font-family="Libre Franklin,sans-serif" font-weight="700" font-size="13">Minneapolis</text>
+          <text x="478" y="103" text-anchor="middle" fill="#C9C2B4" font-family="Libre Franklin,sans-serif" font-size="11">~3h10m nonstop</text>
+
+          <circle cx="486" cy="486" r="6" fill="#DDA23A"/>
+          <text x="486" y="463" text-anchor="middle" fill="#F2EADB" font-family="Libre Franklin,sans-serif" font-weight="700" font-size="13">Tampa</text>
+          <text x="486" y="509" text-anchor="middle" fill="#C9C2B4" font-family="Libre Franklin,sans-serif" font-size="11">~2h35m nonstop</text>
+
+          <circle cx="300" cy="300" r="34" fill="#DDA23A"/>
+          <text x="300" y="295" text-anchor="middle" fill="#1E2420" font-family="Fraunces,serif" font-size="14" font-weight="600">AUS</text>
+          <text x="300" y="312" text-anchor="middle" fill="#1E2420" font-family="Libre Franklin,sans-serif" font-size="9">Austin, TX</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — FLIGHTS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Pillar 01 — Getting here</div>
+      <h2>Nobody's Flying Standby to Get Here</h2>
+      <div class="flight-rows">
+        <div class="flight-row">
+          <div class="city">Minneapolis → Austin</div>
+          <div class="tag">Nonstop</div>
+          <div class="dur">~3h 10m</div>
+          <div class="air">Delta · Southwest · Sun Country</div>
+        </div>
+        <div class="flight-row">
+          <div class="city">Seattle → Austin</div>
+          <div class="tag">Nonstop</div>
+          <div class="dur">~4h 15m</div>
+          <div class="air">Alaska · Delta · Southwest</div>
+        </div>
+        <div class="flight-row">
+          <div class="city">Tampa → Austin</div>
+          <div class="tag">Nonstop</div>
+          <div class="dur">~2h 35m</div>
+          <div class="air">Southwest — several times a day</div>
+        </div>
+      </div>
+      <div class="note-box">Every house on our shortlist is 35 to 55 minutes from arrivals at AUS — a full-service airport with every major rental counter. No connections, no puddle-jumping into a regional strip.</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — WEATHER (dark) -->
+  <section class="slide dark">
+    <div class="slide-inner">
+      <div class="eyebrow">Pillar 02 — About the heat</div>
+      <h2>Yes, It's Texas. Here's the Actual Number.</h2>
+      <p class="lede">We know July in the South is a real concern. So we checked — against the trip everyone already agreed to rule out.</p>
+      <div class="weather-wrap">
+        <div class="weather-bar-row">
+          <div class="wlabel"><span class="place">Austin, TX — average July high</span><span class="temp">96°F</span></div>
+          <div class="wbar-track"><div class="wbar-fill austin" style="width:87%;"></div></div>
+        </div>
+        <div class="weather-bar-row">
+          <div class="wlabel"><span class="place">Phoenix, AZ — average July high</span><span class="temp">106°F</span></div>
+          <div class="wbar-track"><div class="wbar-fill phx" style="width:96%;"></div></div>
+        </div>
+        <p class="weather-note">We're not pretending it's mild — we're saying it's not Phoenix. And every property we shortlisted has its own private pool and hot tub; Barton Springs downtown stays a natural 68°F year-round.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — TWO VACATIONS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Pillar 03 — One house, two vacations</div>
+      <h2>Stay In, or Go Out — Nobody Has to Agree</h2>
+      <div class="stayout">
+        <div class="stay">
+          <h3>Stay in</h3>
+          <ul>
+            <li>Private pool, hot tub, and yard space for 9 kids to burn off energy</li>
+            <li>Cook as a group instead of splitting into four dinner reservations</li>
+            <li>Zero pants required, zero car seats buckled</li>
+          </ul>
+        </div>
+        <div class="out">
+          <h3>Go out</h3>
+          <ul>
+            <li>Downtown Austin, Lady Bird Lake, live music — 30 to 55 minutes away</li>
+            <li>A real city with real restaurants, not just the closest chain</li>
+            <li>Enough for a half-day trip without committing the whole vacation to it</li>
+          </ul>
+        </div>
+      </div>
+      <p class="tension-line" style="margin-top:28px;">Every property we shortlisted sits in the Hill Country just outside the city — private and quiet, with Austin on standby.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 — HOUSES INTRO -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Slide 9 — The houses</div>
+      <h2>Three Houses, Real July 2027 Pricing</h2>
+      <p class="lede">We didn't just save pretty listings — we checked live pricing for our actual dates, for our actual group size, against our $2,000/night target.</p>
+      <div class="mini-table">
+        <div class="mini-row head">
+          <div>Property</div><div>Sleeps</div><div>$ / night avg</div><div>Vs. budget</div>
+        </div>
+        <div class="mini-row">
+          <div class="hname">Grit&amp;Grace Ranch</div><div><span class="mlabel">Sleeps </span>Up to 24</div><div><span class="mlabel">Avg/night </span>$1,391</div>
+          <div class="price-tag under">Under budget</div>
+        </div>
+        <div class="mini-row">
+          <div class="hname">Canyonwood Ranch</div><div><span class="mlabel">Sleeps </span>18</div><div><span class="mlabel">Avg/night </span>$1,427</div>
+          <div class="price-tag under">Under budget</div>
+        </div>
+        <div class="mini-row">
+          <div class="hname">Lariat Springs</div><div><span class="mlabel">Sleeps </span>18</div><div><span class="mlabel">Avg/night </span>$2,119</div>
+          <div class="price-tag over">~$120 over</div>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:22px;font-size:14px;">Priced for a sample 5-night window (Jul 16–21, 2027) at our full group size. Exact dates are still a group decision, so treat these as a real ballpark, not a locked quote.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 — HOUSE 1 -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Option 1 · Dripping Springs, TX · ~35 min to AUS</div>
+      <div class="house-head">
+        <h2 class="house-name">Grit&amp;Grace Ranch</h2>
+        <div class="meta-right">
+          <span class="rating-chip">4.95★ · 146 reviews · Guest Favorite</span>
+          <a class="listing-link" href="https://www.airbnb.com/rooms/700701285280163421" target="_blank" rel="noopener noreferrer">View listing on Airbnb ↗</a>
+        </div>
+      </div>
+      <div class="photo-grid">
+        <img class="big" loading="lazy" src="https://a0.muscache.com/im/pictures/miso/Hosting-700701285280163421/original/785184c6-48a5-475b-97c4-5b332bb261e5.jpeg?im_w=1200" alt="Grit&amp;Grace Ranch pool">
+        <img loading="lazy" src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-700701285280163421/original/c162c35a-7fd8-47b9-9faa-d04185d6f00e.jpeg?im_w=720" alt="Grit&amp;Grace Ranch outdoor space">
+        <img loading="lazy" src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-700701285280163421/original/8136389b-bc83-4112-b761-a12ea769bd3d.jpeg?im_w=720" alt="Grit&amp;Grace Ranch interior">
+      </div>
+      <div class="house-body">
+        <div>
+          <div class="specs-line">5 bedrooms · 14 beds · 4 bathrooms</div>
+          <div class="specs-line">Main house + separate bunkhouse — sleeps up to 24 between them</div>
+          <div class="price-line">$1,391 <span style="font-size:16px;">/ night avg</span></div>
+          <div class="price-sub">$6,957 for 5 nights (Jul 16–21, 2027) · well under our target</div>
+          <div class="why-box">One family said their kids happily rode the waterslide from morning to night.</div>
+        </div>
+        <ul class="highlight-list">
+          <li>Resort-style pool with a waterfall and waterslide</li>
+          <li>Private hot tub and an illuminated covered cabana</li>
+          <li>Screened-in porch and a fully stocked outdoor kitchen</li>
+          <li>Table tennis, shuffleboard, putting green, and an indoor game room</li>
+          <li>Hosted by a Superhost rated the #1 property manager in the U.S. for 2025</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 — HOUSE 2 -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Option 2 · Dripping Springs, TX · ~30 min to downtown Austin</div>
+      <div class="house-head">
+        <h2 class="house-name">Canyonwood Ranch</h2>
+        <div class="meta-right">
+          <span class="rating-chip">4.97★ · 94 reviews · Top 10% of homes</span>
+          <a class="listing-link" href="https://www.airbnb.com/rooms/710405235354342514" target="_blank" rel="noopener noreferrer">View listing on Airbnb ↗</a>
+        </div>
+      </div>
+      <div class="photo-grid">
+        <img class="big" loading="lazy" src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-710405235354342514/original/fc712590-31cc-40ed-91c6-325c07318c98.jpeg?im_w=1200" alt="Canyonwood Ranch pool">
+        <img loading="lazy" src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-710405235354342514/original/02420a73-7305-447c-8f15-8bd9a47b1b04.jpeg?im_w=720" alt="Canyonwood Ranch kitchen">
+        <img loading="lazy" src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-710405235354342514/original/e56c4bb5-c254-4fc8-9faf-2704b67d470e.jpeg?im_w=720" alt="Canyonwood Ranch exterior">
+      </div>
+      <div class="house-body">
+        <div>
+          <div class="specs-line">5 bedrooms · 9 beds · 3.5 bathrooms · sleeps 18</div>
+          <div class="specs-line">A private 12-acre working ranch</div>
+          <div class="price-line">$1,427 <span style="font-size:16px;">/ night avg</span></div>
+          <div class="price-sub">$7,133 for 5 nights (Jul 16–21, 2027) · under our target</div>
+          <div class="warn-box">Worth flagging: this pool doesn't have a child-safety fence, so it needs an adult watching at all times — something to plan around with the younger kids in the group.</div>
+        </div>
+        <ul class="highlight-list">
+          <li>Private pool and spa, plus a private pickleball court</li>
+          <li>Custom bunk room — two queen-over-queen bunks, built for a kid pile-on</li>
+          <li>Covered "Loggia" patio with a large grill and fireplace</li>
+          <li>Real farm animals on-site: cows, goats, and donkeys</li>
+          <li>Guest favorite, top 10% of homes on the platform</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — HOUSE 3 -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Option 3 · New Braunfels, TX · ~55 min to AUS</div>
+      <div class="house-head">
+        <h2 class="house-name">Lariat Springs</h2>
+        <div class="meta-right">
+          <span class="rating-chip">4.91★ · 22 reviews</span>
+          <a class="listing-link" href="https://www.airbnb.com/rooms/1562306804901659840" target="_blank" rel="noopener noreferrer">View listing on Airbnb ↗</a>
+        </div>
+      </div>
+      <div class="photo-grid">
+        <img class="big" loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-1562306804901659840/original/0829b4a8-0292-4148-8eec-6165d3ab799a.jpeg?im_w=1200" alt="Lariat Springs infinity pool">
+        <img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-1562306804901659840/original/c89cd93a-b2d2-4ed3-9248-5ec4a01377e0.jpeg?im_w=720" alt="Lariat Springs pool view">
+        <img loading="lazy" src="https://a0.muscache.com/im/pictures/hosting/Hosting-1562306804901659840/original/fca1956b-a383-4a9e-a559-8ddbb4f78068.jpeg?im_w=720" alt="Lariat Springs lounge">
+      </div>
+      <div class="house-body">
+        <div>
+          <div class="specs-line">6 private suites · 9 beds · 7 bathrooms · sleeps 18</div>
+          <div class="struct-note">Built retreat-style: one shared great room and kitchen, with each family in its own private suite instead of one big house.</div>
+          <div class="price-line">$2,119 <span style="font-size:16px;">/ night avg</span></div>
+          <div class="price-sub">$10,593 for 5 nights (Jul 16–21, 2027) · about $120/night over target</div>
+        </div>
+        <ul class="highlight-list">
+          <li>Infinity pool plus a heated, hot-spring-style spa</li>
+          <li>Pizza oven and a commercial-style chef's kitchen</li>
+          <li>"Ice House" lounge with its own ice machine and beverage station</li>
+          <li>One wheelchair-accessible suite on the ground floor</li>
+        </ul>
+      </div>
+      <p class="lede" style="margin-top:8px;font-size:14.5px;max-width:900px;">The most privacy per family and the most dramatic Hill Country views — but it runs over budget and it's the farthest of the three from the airport. We're including it so we're showing the real range, not just our favorite.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 13 — ACTIVITIES -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Slide 13 — For the Explorers</div>
+      <h2>And If Anyone Wants to Leave the Pool...</h2>
+      <div class="activity-cols">
+        <div class="activity-col">
+          <h3>Cool off</h3>
+          <ul>
+            <li>Barton Springs Pool — a natural 68°F spring downtown, free admission</li>
+            <li>Splash Shack indoor water park (Cedar Park)</li>
+            <li>Kalahari indoor/outdoor water resort (Round Rock)</li>
+          </ul>
+        </div>
+        <div class="activity-col">
+          <h3>Beat the heat indoors</h3>
+          <ul>
+            <li>The Thinkery — Austin's hands-on kids' museum</li>
+            <li>Inner Space Cavern — a constant 72°F, with gemstone mining</li>
+            <li>Alamo Drafthouse — dinner and a movie, kids' menu included</li>
+          </ul>
+        </div>
+        <div class="activity-col">
+          <h3>Hill Country, early or late</h3>
+          <ul>
+            <li>Hamilton Pool Preserve — a collapsed grotto swimming hole</li>
+            <li>Lake Travis — boat rentals and ziplining</li>
+            <li>The Salt Lick BBQ — the classic Hill Country meal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 14 — CLOSING (dark) -->
+  <section class="slide dark">
+    <svg class="lights" viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path d="M0,10 Q150,55 300,15 T600,20 T900,10 T1200,25" stroke="#4a4437" stroke-width="1" fill="none" opacity=".6"/>
+      <g fill="#DDA23A">
+        <circle cx="40" cy="18" r="3.5"/><circle cx="150" cy="42" r="3.5"/><circle cx="260" cy="24" r="3.5"/>
+        <circle cx="380" cy="14" r="3.5"/><circle cx="490" cy="30" r="3.5"/><circle cx="610" cy="20" r="3.5"/>
+        <circle cx="720" cy="12" r="3.5"/><circle cx="830" cy="26" r="3.5"/><circle cx="950" cy="16" r="3.5"/>
+        <circle cx="1070" cy="28" r="3.5"/><circle cx="1160" cy="18" r="3.5"/>
+      </g>
+    </svg>
+    <div class="slide-inner close-wrap">
+      <div class="eyebrow">Slide 14 — Our ask</div>
+      <h2 style="color:var(--cream-on-dark);">Vote Austin</h2>
+      <div class="close-bullets">
+        <div><span class="mark">—</span><span>Central for everyone, with a nonstop flight for every family in this group.</span></div>
+        <div><span class="mark">—</span><span>The weather math actually works in our favor — it's hot, but it's not the desert trip we already ruled out.</span></div>
+        <div><span class="mark">—</span><span>A house built for the Nesters and the Explorers alike, with three real options already under $1,450 a night.</span></div>
+      </div>
+      <p class="cta-line">Let's lock in dates and grab one of these houses before somebody else does.</p>
+    </div>
+  </section>
+
+</div>
+
+<nav class="deck-nav">
+  <button class="nav-btn" id="prevBtn" aria-label="Previous slide">‹</button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">01 / 14</span>
+  <button class="nav-btn" id="nextBtn" aria-label="Next slide">›</button>
+</nav>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  const dotsWrap = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to slide ' + (i+1));
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function goTo(i){
+    if(i < 0 || i >= total) return;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    dots.forEach((d,idx) => d.classList.toggle('active', idx === current));
+    counter.textContent = pad(current+1) + ' / ' + pad(total);
+    progressFill.style.width = ((current+1)/total*100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total-1;
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current-1));
+  nextBtn.addEventListener('click', () => goTo(current+1));
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); goTo(current+1); }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); goTo(current-1); }
+  });
+
+  let touchStartX = null, touchStartY = null;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if(touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){
+      dx < 0 ? goTo(current+1) : goTo(current-1);
+    }
+    touchStartX = null; touchStartY = null;
+  }, { passive: true });
+
+  const fsBtn = document.getElementById('fsBtn');
+  fsBtn.addEventListener('click', () => {
+    if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+    else{ document.exitFullscreen(); }
+  });
+
+  goTo(0);
+
+  // Grab keyboard focus immediately so arrow keys work without a manual click first
+  // (artifacts render in an iframe, which needs explicit focus to receive key events).
+  document.body.setAttribute('tabindex', '-1');
+  window.addEventListener('load', () => document.body.focus({ preventScroll: true }));
+  document.body.focus({ preventScroll: true });
+
+  // Keep focus on the document (not a button) after any click, so arrow keys
+  // keep working right after someone uses the mouse or taps a nav control.
+  document.addEventListener('mouseup', () => {
+    setTimeout(() => document.body.focus({ preventScroll: true }), 0);
+  });
+</script>
+</body>
+</html>
