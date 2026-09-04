@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Austin, TX — The Pitch</title>
+<title>Scherbring BFF Trip Pitch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,440;9..144,560;9..144,640&family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,13 +32,11 @@
     font-family:'Libre Franklin',sans-serif;
     color:var(--ink);
     outline:none;
+    overflow:hidden;
     overscroll-behavior:none;
-    position:fixed;
-    inset:0;
-    width:100%;
     height:100vh;
     height:100dvh;
-    height:calc(var(--vh, 1vh) * 100);
+    height:100svh;
   }
   h1,h2,h3{
     font-family:'Fraunces',serif;
@@ -378,33 +376,102 @@
 
   @media (max-width:880px){
     .fs-btn{ display:none; } /* Fullscreen API isn't reliably supported in iPhone Safari */
+
+    /* Compact, top-aligned slide shell so everything fits one screen without scrolling */
     .slide{
-      padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));
+      justify-content:flex-start;
+      padding:max(env(safe-area-inset-top,0px),12px) 20px calc(48px + env(safe-area-inset-bottom,0px)) 20px;
     }
     .deck-nav{
-      height:calc(76px + env(safe-area-inset-bottom,0px));
-      background:linear-gradient(to top, rgba(15,13,10,1) 55%, rgba(15,13,10,0));
+      height:calc(40px + env(safe-area-inset-bottom,0px));
+      padding-bottom:env(safe-area-inset-bottom,0px);
+      gap:10px;
+      background:linear-gradient(to top, rgba(15,13,10,1) 70%, rgba(15,13,10,0));
     }
-    .cover-wrap{ grid-template-columns:1fr; }
-    .cover-map{ order:-1; max-width:340px; }
-    .roster-grid{ grid-template-columns:repeat(2,1fr); }
-    .split, .stayout, .house-body{ grid-template-columns:1fr; }
-    .pillar-grid, .activity-cols{ grid-template-columns:1fr; }
-    .flight-row{ grid-template-columns:1fr; gap:6px; padding:16px 0; }
-    .mini-row{ grid-template-columns:1fr 1fr; row-gap:6px; }
-    .mini-row.head{ display:none; }
-    .mini-row .hname{ grid-column:1/3; }
-    .mlabel{ display:inline; color:var(--ink-soft); font-weight:400; }
-    .photo-grid{ grid-template-columns:1fr 1fr; height:auto; grid-template-rows:120px 120px; }
-    .photo-grid .big{ grid-column:1/3; grid-row:1; height:190px; }
-    .stat-strip{ flex-wrap:wrap; }
-    .stat-strip div{ flex:1 1 45%; margin-bottom:14px; }
-    .house-head{ align-items:flex-start; }
-    .house-head .meta-right{ align-items:flex-start; }
-  }
+    .nav-btn{ width:28px; height:28px; font-size:14px; }
+    .dots{ gap:5px; }
+    .dot{ width:4px; height:4px; padding:6px; }
+    .counter{ font-size:10px; width:42px; }
+    .progress-track{ height:2px; }
 
-  @media (max-width:420px){
-    .roster-grid{ grid-template-columns:1fr; }
+    /* Compact typography and spacing so content clears the URL bar above and nav below */
+    .eyebrow{ font-size:11px; margin-bottom:6px; }
+    h1{ font-size:clamp(28px,9vw,84px); line-height:1.02; }
+    h2{ font-size:clamp(22px,7vw,54px); }
+    .lede{ font-size:14px; line-height:1.42; margin-top:8px; max-width:100%; }
+    .chip-row{ margin-top:14px; gap:6px; }
+    .chip{ padding:5px 11px; font-size:11.5px; }
+
+    .cover-wrap{ grid-template-columns:1fr; gap:16px; }
+    .cover-map{ order:-1; max-width:200px; }
+
+    .roster-grid{ grid-template-columns:repeat(2,1fr); gap:10px; margin-top:18px; }
+    .roster-card{ padding:14px 12px; }
+    .roster-card .who{ font-size:16px; margin-bottom:5px; }
+    .roster-card .loc{ font-size:11px; margin-bottom:6px; }
+    .roster-card .fam{ font-size:12.5px; }
+    .stat-strip{ flex-wrap:wrap; margin-top:16px; padding-top:12px; }
+    .stat-strip div{ flex:1 1 45%; margin-bottom:10px; }
+    .stat-strip .num{ font-size:22px; }
+    .stat-strip .lbl{ font-size:11px; }
+
+    .split, .stayout, .house-body{ grid-template-columns:1fr; }
+    .split{ gap:10px; margin-top:16px; }
+    .split-panel{ padding:16px 16px; }
+    .split-panel h3{ font-size:17px; margin-bottom:5px; }
+    .split-panel p{ font-size:13px; line-height:1.4; }
+    .tension-line{ margin-top:14px; font-size:16px; }
+
+    .pillar-grid, .activity-cols{ grid-template-columns:1fr; gap:12px; margin-top:16px; }
+    .pillar{ padding-top:10px; }
+    .pillar .n{ font-size:12px; margin-bottom:5px; }
+    .pillar h3{ font-size:16px; margin-bottom:4px; }
+    .pillar p{ font-size:12.5px; }
+
+    .flight-rows{ margin-top:14px; }
+    .flight-row{ grid-template-columns:1fr; gap:2px; padding:10px 0; }
+    .flight-row .city{ font-size:16px; }
+    .flight-row .dur{ font-size:15px; }
+    .flight-row .air{ font-size:11.5px; }
+    .note-box{ margin-top:12px; padding:10px 12px; font-size:12px; }
+
+    .weather-wrap{ margin-top:16px; }
+    .weather-bar-row{ margin-bottom:12px; }
+    .weather-bar-row .wlabel .place{ font-size:13px; }
+    .weather-bar-row .wlabel .temp{ font-size:24px; }
+    .wbar-track{ height:9px; }
+    .weather-note{ font-size:11.5px; }
+
+    .stayout{ margin-top:14px; }
+    .stayout > div{ padding:14px 14px; }
+    .stayout h3{ font-size:16px; margin-bottom:6px; }
+    .stayout ul{ font-size:12px; line-height:1.4; padding-left:14px; }
+
+    .mini-table{ margin-top:14px; }
+    .mini-row{ grid-template-columns:1fr 1fr; row-gap:4px; padding:8px 0; font-size:13px; }
+    .mini-row.head{ display:none; }
+    .mini-row .hname{ grid-column:1/3; font-size:15px; }
+    .mlabel{ display:inline; color:var(--ink-soft); font-weight:400; }
+
+    .house-head{ align-items:flex-start; gap:6px; }
+    .house-head .meta-right{ align-items:flex-start; gap:5px; }
+    .house-name{ font-size:22px; }
+    .rating-chip, .listing-link{ padding:5px 11px; font-size:11px; }
+    .photo-grid{ grid-template-columns:1fr 1fr; height:auto; grid-template-rows:64px 64px; margin-top:10px; gap:5px; }
+    .photo-grid .big{ grid-column:1/3; grid-row:1; height:100px; }
+    .house-body{ gap:12px; margin-top:10px; }
+    .specs-line{ font-size:12px; margin-bottom:2px; }
+    .price-line{ font-size:20px; margin:5px 0 2px; }
+    .price-sub{ font-size:10.5px; }
+    .highlight-list{ margin-top:8px; font-size:11.5px; line-height:1.32; padding-left:14px; }
+    .why-box, .warn-box, .struct-note{ margin-top:8px; padding:8px 10px; font-size:11.5px; line-height:1.35; }
+
+    .activity-col h3{ font-size:15px; margin-bottom:8px; }
+    .activity-col ul{ font-size:12px; line-height:1.45; }
+
+    .close-bullets{ margin-top:16px; gap:10px; }
+    .close-bullets div{ font-size:13.5px; gap:10px; }
+    .cta-line{ margin-top:18px; font-size:16px; }
   }
 
   @media (max-height:420px) and (orientation:landscape){
@@ -550,7 +617,7 @@
     <div class="cover-wrap">
       <div>
         <div class="eyebrow">The reveal</div>
-        <h2 style="color:var(--cream-on-dark); font-size:clamp(36px,5vw,64px);">Our Answer:<br>Austin, Texas</h2>
+        <h2 style="color:var(--cream-on-dark); font-size:clamp(26px,7vw,64px);">Our Answer:<br>Austin, Texas</h2>
         <p class="lede" style="color:#C9C2B4;">Hill Country, just outside the city — private when we want it, a real skyline when we don't. Here's how it checks every box from the last slide.</p>
       </div>
       <div class="cover-map">
@@ -780,10 +847,9 @@
           <li>Infinity pool plus a heated, hot-spring-style spa</li>
           <li>Pizza oven and a commercial-style chef's kitchen</li>
           <li>"Ice House" lounge with its own ice machine and beverage station</li>
-          <li>One wheelchair-accessible suite on the ground floor</li>
         </ul>
       </div>
-      <p class="lede" style="margin-top:8px;font-size:14.5px;max-width:900px;">The most privacy per family and the most dramatic Hill Country views — but it runs over budget and it's the farthest of the three from the airport. We're including it so we're showing the real range, not just our favorite.</p>
+      <p class="lede" style="margin-top:8px;max-width:900px;">The most privacy per family and the most dramatic Hill Country views — but it runs over budget and it's the farthest of the three from the airport. We're including it so we're showing the real range, not just our favorite.</p>
     </div>
   </section>
 
@@ -854,18 +920,6 @@
 </nav>
 
 <script>
-  // Lock the deck to the real visible viewport height on mobile browsers,
-  // where 100dvh can lag behind the address-bar show/hide animation and
-  // leave a gap of body background exposed below the deck.
-  function setVH(){
-    const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-    document.documentElement.style.setProperty('--vh', (h * 0.01) + 'px');
-  }
-  setVH();
-  window.addEventListener('resize', setVH);
-  window.addEventListener('orientationchange', setVH);
-  if(window.visualViewport){ window.visualViewport.addEventListener('resize', setVH); }
-
   const slides = Array.from(document.querySelectorAll('.slide'));
   const total = slides.length;
   const dotsWrap = document.getElementById('dots');
